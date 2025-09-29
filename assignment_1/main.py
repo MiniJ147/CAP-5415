@@ -7,10 +7,9 @@
 
 import numpy as np
 import os
+import sys
 from PIL import Image
 import matplotlib.pyplot as plt
-from scipy.sparse import csr_array
-from scipy.sparse.csgraph import connected_components
 from scipy import ndimage
 
 
@@ -19,7 +18,7 @@ OUTPUT_DIR = "./figs"
 
 # (size, sigma)
 SIZE = 5
-SIGMAS = [1,2,3]
+SIGMAS = [0.5,1,2,3]
 
 def get_gaussian_values(x, sigma):
     eulers_number = np.exp((-0.5) * ((x**2)/(sigma**2))) # -x^2/(2[sigma]^2)
@@ -202,10 +201,17 @@ def cany_edge(img_path, size, sigma):
 
     # Smoothed Image
     show_img(
-        I=I_smooth,
+        I=conv_x(I,G),
         size=size,
         sigma=sigma,
-        caption=f"Smoothed Image",
+        caption=f"X_Conv",
+        img_name=img_name)
+    
+    show_img(
+        I=conv_y(I,G),
+        size=size,
+        sigma=sigma,
+        caption=f"Y_Conv",
         img_name=img_name)
 
     # Gaussian Derative
@@ -214,6 +220,21 @@ def cany_edge(img_path, size, sigma):
     # Calculate both directions
     I_D_X = conv_x(I_smooth, G_D)
     I_D_Y = conv_y(I_smooth, G_D)
+
+    # showing derratives 
+    show_img(
+        I=I_D_X,
+        size=size,
+        sigma=sigma,
+        caption=f"X_1D_Conv",
+        img_name=img_name)
+    
+    show_img(
+        I=I_D_Y,
+        size=size,
+        sigma=sigma,
+        caption=f"Y_1D_Conv",
+        img_name=img_name)
 
     # Get our Gradient Magntiude with our calcluated directions
     I_GRAD_MAG = gradient_magnitude(I_D_X, I_D_Y)
@@ -231,36 +252,34 @@ def cany_edge(img_path, size, sigma):
         M = I_GRAD_MAG, 
         angles = calculate_normal_direction_angle(I_D_X, I_D_Y))
 
-    # show image
-    show_img(
-        I=I_NMS,
-        size=size,
-        sigma=sigma,
-        caption=f"Non_Maxium_Suppression",
-        img_name=img_name)
-
-
     # final step - apply hysteresis thresholding
-    high = np.percentile(I_NMS, 90)
-    low = 0.9 * high
+    high = np.percentile(I_NMS, 80)
+    low = np.percentile(I_NMS, 40)
     org_shape = I_NMS.shape
-    mask = hysteresis_thresholding(I_NMS,0,1e9)
+    mask = hysteresis_thresholding(I_NMS,low,high)
 
     # show image
     show_img(
         I=I_NMS*mask,
         size=size,
         sigma=sigma,
-        caption=f"hysteresis_thresholding",
+        caption=f"final image",
         img_name=img_name)
 
 def main():
+    if len(sys.argv) > 2:
+        cany_edge(
+            img_path=sys.argv[2],
+            size=SIZE,
+            sigma=int(sys.argv[3]))
+        return
     # grab all test images
     imgs = os.listdir(TEST_DIR)
 
     # apply cany_edge detection on all images and sigma combinations
     for img in imgs:
         path = f"{TEST_DIR}/{img}"
+        print(path)
         
         for sigma in SIGMAS: 
             cany_edge(
