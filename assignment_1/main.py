@@ -1,4 +1,5 @@
 # Programming Assignment 1
+# By Jake Paul
 # Canny Edge Detection Implementation
 
 # Tasks
@@ -107,6 +108,7 @@ def calculate_normal_direction_angle(D_X,D_Y):
     """
     gets normal direction for all data points in image
     """
+    # find smallest common shape
     min_rows = min(D_X.shape[0], D_Y.shape[0])
     min_cols = min(D_X.shape[1], D_Y.shape[1])
     
@@ -158,17 +160,24 @@ def show_img(I, size, img_name, sigma, caption):
     dump_dir = f"{OUTPUT_DIR}/{img_name}/sigma-{sigma}/size-{size}"
 
     os.makedirs(dump_dir,exist_ok=True)
-    plt.title(f"{caption} sigma = {sigma} | size = {size}")
+   
+    plt.imshow(img, cmap="gray")
+    plt.suptitle(caption, fontsize=16)
 
-    plt.imsave(f"{dump_dir}/{caption}.png",img,cmap="gray")
-
+    #Make room for the title before saving
+    plt.tight_layout(rect=[0, 0, 1, 0.95])  
+    plt.savefig(f"{dump_dir}/{caption}.png")
     plt.close()
 
 def hysteresis_thresholding(grad_mag, low_thresh, high_thresh):
+    """
+    Apply hysteresis_thresholding
+    Returns binary map (1 if pixel is an edge. 0 pixel is not an edge)
+    """
     # Strong edges: pixels above high threshold
     strong = grad_mag >= high_thresh
 
-    # Weak edges: between thresholds
+    # Weak edges: between thresholds | High > grad_mag >= Low
     weak = (grad_mag >= low_thresh) & (grad_mag < high_thresh)
 
     # Combine strong + weak into a candidate mask
@@ -181,9 +190,9 @@ def hysteresis_thresholding(grad_mag, low_thresh, high_thresh):
     strong_labels = np.unique(labeled[strong])
 
     # Keep only components connected to strong edges
-    out = np.isin(labeled, strong_labels)
+    out = np.isin(labeled, strong_labels).astype(np.uint8)
 
-    return out.astype(np.uint8)  # binary edge map
+    return out
 
 def cany_edge(img_path, size, sigma):
     img_name = img_path.split("/")[-1].split(".png")[0]
@@ -204,14 +213,14 @@ def cany_edge(img_path, size, sigma):
         I=conv_x(I,G),
         size=size,
         sigma=sigma,
-        caption=f"X_Conv",
+        caption=f"Smoothed Image x",
         img_name=img_name)
     
     show_img(
         I=conv_y(I,G),
         size=size,
         sigma=sigma,
-        caption=f"Y_Conv",
+        caption=f"Smooth Image y",
         img_name=img_name)
 
     # Gaussian Derative
@@ -226,14 +235,14 @@ def cany_edge(img_path, size, sigma):
         I=I_D_X,
         size=size,
         sigma=sigma,
-        caption=f"X_1D_Conv",
+        caption=f"X-Derivative Image",
         img_name=img_name)
     
     show_img(
         I=I_D_Y,
         size=size,
         sigma=sigma,
-        caption=f"Y_1D_Conv",
+        caption=f"Y-Derivative Image",
         img_name=img_name)
 
     # Get our Gradient Magntiude with our calcluated directions
@@ -244,7 +253,7 @@ def cany_edge(img_path, size, sigma):
         I=I_GRAD_MAG,
         size=size,
         sigma=sigma,
-        caption=f"Gradient",
+        caption=f"Gradient Magnitude",
         img_name=img_name)
 
     # get non maximum suppresion
@@ -255,7 +264,6 @@ def cany_edge(img_path, size, sigma):
     # final step - apply hysteresis thresholding
     high = np.percentile(I_NMS, 80)
     low = np.percentile(I_NMS, 40)
-    org_shape = I_NMS.shape
     mask = hysteresis_thresholding(I_NMS,low,high)
 
     # show image
@@ -263,7 +271,7 @@ def cany_edge(img_path, size, sigma):
         I=I_NMS*mask,
         size=size,
         sigma=sigma,
-        caption=f"final image",
+        caption=f"Edges, sigma={sigma}",
         img_name=img_name)
 
 def main():
