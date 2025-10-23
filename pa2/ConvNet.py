@@ -85,8 +85,8 @@ class ConvNet(nn.Module):
         # Two convolutional layers + one fully connnected layer.
         #
         # ----------------- YOUR CODE HERE ----------------------
-        X = self.activation(self.pool(self.conv1(X))) # layer 1 conv1 --> pool --> activation
-        X = self.activation(self.pool(self.conv2(X))) # layer 2 conv2 --> pool --> activation
+        X = self.pool(self.activation(self.conv1(X))) # layer 1 conv1 --> pool --> activation
+        X = self.pool(self.activation(self.conv2(X))) # layer 2 conv2 --> pool --> activation
         X = X.view(X.size(0), -1) # flatten array
         X = self.activation(self.fc1(X)) # fc layer 1
         X = self.fc2(X) # output
@@ -100,8 +100,8 @@ class ConvNet(nn.Module):
         # Two convolutional layers + one fully connected layer, with ReLU.
         #
         # ----------------- YOUR CODE HERE ----------------------
-        X = self.activation(self.pool(self.conv1(X))) # layer 1 conv1 --> pool --> activation
-        X = self.activation(self.pool(self.conv2(X))) # layer 2 conv2 --> pool --> activation
+        X = self.pool(self.activation(self.conv1(X))) # layer 1 conv1 --> pool --> activation
+        X = self.pool(self.activation(self.conv2(X))) # layer 2 conv2 --> pool --> activation
         X = X.view(X.size(0), -1) # flatten array
         X = self.activation(self.fc1(X)) # fc layer 1
         X = self.fc2(X) # output
@@ -114,8 +114,8 @@ class ConvNet(nn.Module):
         # Two convolutional layers + two fully connected layers, with ReLU.
         #
         # ----------------- YOUR CODE HERE ----------------------
-        X = self.activation(self.pool(self.conv1(X))) # layer 1 conv1 --> pool --> activation
-        X = self.activation(self.pool(self.conv2(X))) # layer 2 conv2 --> pool --> activation
+        X = self.pool(self.activation(self.conv1(X))) # layer 1 conv1 --> pool --> activation
+        X = self.pool(self.activation(self.conv2(X))) # layer 2 conv2 --> pool --> activation
         X = X.view(X.size(0), -1) # flatten
         X = self.activation(self.fc1(X))
         X = self.activation(self.fc2(X))
@@ -129,8 +129,8 @@ class ConvNet(nn.Module):
         # and  + Dropout.
         #
         # ----------------- YOUR CODE HERE ----------------------
-        X = self.activation(self.pool(self.conv1(X))) # layer 1 conv1 --> pool --> activation
-        X = self.activation(self.pool(self.conv2(X))) # layer 2 conv2 --> pool --> activation
+        X = self.pool(self.activation(self.conv1(X))) # layer 1 conv1 --> pool --> activation
+        X = self.pool(self.activation(self.conv2(X))) # layer 2 conv2 --> pool --> activation
         X = X.view(X.size(0), -1) # flatten
         X = self.dropout(self.activation(self.fc1(X)))
         X = self.dropout(self.activation(self.fc2(X)))
