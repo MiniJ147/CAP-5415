@@ -9,12 +9,16 @@ class ConvNet(nn.Module):
         
         # Define various layers here, such as in the tutorial example
         # self.conv1 = nn.Conv2D(...)
+        self.fc1 = nn.Linear(28*28,100)
+        self.fc2 = nn.Linear(100,10)
+        self.sigmoid = nn.Sigmoid()
         
         # This will select the forward pass function based on mode for the ConvNet.
         # Based on the question, you have 5 modes available for step 1 to 5.
         # During creation of each ConvNet model, you will assign one of the valid mode.
         # This will fix the forward function (and the network graph) for the entire training/testing
         if mode == 1:
+            print("forward set to model 1")
             self.forward = self.model_1
         elif mode == 2:
             self.forward = self.model_2
@@ -33,13 +37,12 @@ class ConvNet(nn.Module):
     def model_1(self, X):
         # ======================================================================
         # One fully connected layer.
-        #
-        # ----------------- YOUR CODE HERE ----------------------
-        #
-        # Uncomment the following return stmt once method implementation is done.
-        # return  fcl
-        # Delete line return NotImplementedError() once method is implemented.
-        return NotImplementedError()
+        # ======================================================================
+        X = X.view(X.size(0),-1)
+        X = self.fc1(X) # input layer
+        X = self.sigmoid(X) # non linear
+        X = self.fc2(X) # output layer
+        return X
 
     # Use two convolutional layers.
     def model_2(self, X):

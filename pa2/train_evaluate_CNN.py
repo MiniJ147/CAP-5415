@@ -12,6 +12,12 @@ from ConvNet import ConvNet
 import argparse
 import numpy as np 
 
+def is_correct(pred, ground_truth):
+    total = 0
+    for idx in range(len(pred)):
+        total += 1 if pred[idx, 0].item() == ground_truth[idx] else 0
+    return total
+
 def train(model, device, train_loader, optimizer, criterion, epoch, batch_size):
     '''
     Trains the model for an epoch and optimizes it.
@@ -34,7 +40,8 @@ def train(model, device, train_loader, optimizer, criterion, epoch, batch_size):
     # Iterate over entire training samples (1 epoch)
     for batch_idx, batch_sample in enumerate(train_loader):
         data, target = batch_sample
-        
+        ground_truth = batch_sample[1]
+
         # Push data/label to correct device
         data, target = data.to(device), target.to(device)
         
@@ -47,9 +54,7 @@ def train(model, device, train_loader, optimizer, criterion, epoch, batch_size):
         # ======================================================================
         # Compute loss based on criterion
         # ----------------- YOUR CODE HERE ----------------------
-        #
-        # Remove NotImplementedError and assign correct loss function.
-        loss = NotImplementedError()
+        loss = criterion(output, target) 
         
         # Computes gradient based on final loss
         loss.backward()
@@ -65,11 +70,9 @@ def train(model, device, train_loader, optimizer, criterion, epoch, batch_size):
         
         # ======================================================================
         # Count correct predictions overall 
-        # ----------------- YOUR CODE HERE ----------------------
-        #
-        # Remove NotImplementedError and assign counting function for correct predictions.
-        correct = NotImplementedError()
-        
+        # ----------------- YOUR CODE HERE ---------------------- 
+        correct += is_correct(pred=pred, ground_truth=ground_truth)
+
     train_loss = float(np.mean(losses))
     train_acc = correct / ((batch_idx+1) * batch_size)
     print('Train set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
@@ -97,6 +100,7 @@ def test(model, device, test_loader):
     with torch.no_grad():
         for batch_idx, sample in enumerate(test_loader):
             data, target = sample
+            ground_truth = sample[1]
             data, target = data.to(device), target.to(device)
             
 
@@ -106,10 +110,7 @@ def test(model, device, test_loader):
             # ======================================================================
             # Compute loss based on same criterion as training
             # ----------------- YOUR CODE HERE ----------------------
-            #
-            # Remove NotImplementedError and assign correct loss function.
-            # Compute loss based on same criterion as training 
-            loss = NotImplementedError()
+            loss = nn.CrossEntropyLoss()(output, target)
             
             # Append loss to overall test loss
             losses.append(loss.item())
@@ -120,9 +121,7 @@ def test(model, device, test_loader):
             # ======================================================================
             # Count correct predictions overall 
             # ----------------- YOUR CODE HERE ----------------------
-            #
-            # Remove NotImplementedError and assign counting function for correct predictions.
-            correct = NotImplementedError()
+            correct += is_correct(pred=pred, ground_truth=ground_truth)
 
     test_loss = float(np.mean(losses))
     accuracy = 100. * correct / len(test_loader.dataset)
@@ -147,16 +146,12 @@ def run_main(FLAGS):
     # ======================================================================
     # Define loss function.
     # ----------------- YOUR CODE HERE ----------------------
-    #
-    # Remove NotImplementedError and assign correct loss function.
-    criterion = NotImplementedError()
+    criterion = nn.CrossEntropyLoss()
     
     # ======================================================================
     # Define optimizer function.
     # ----------------- YOUR CODE HERE ----------------------
-    #
-    # Remove NotImplementedError and assign appropriate optimizer with learning rate and other paramters.
-    optimizer = NotImplementedError()
+    optimizer = optim.Adam(model.parameters(), FLAGS.learning_rate)
         
     
     # Create transformations to apply to each data sample 
