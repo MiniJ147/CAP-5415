@@ -75,7 +75,7 @@ def train(model, device, train_loader, optimizer, criterion, epoch, batch_size):
 
     train_loss = float(np.mean(losses))
     train_acc = correct / ((batch_idx+1) * batch_size)
-    print('Train set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+    print('Train set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)'.format(
         float(np.mean(losses)), correct, (batch_idx+1) * batch_size,
         100. * correct / ((batch_idx+1) * batch_size)))
     return train_loss, train_acc
@@ -176,6 +176,7 @@ def run_main(FLAGS):
     
     # Run training for n_epochs specified in config 
     for epoch in range(1, FLAGS.num_epochs + 1):
+        print("Epoch-Iter:", epoch, FLAGS.num_epochs)
         train_loss, train_accuracy = train(model, device, train_loader,
                                             optimizer, criterion, epoch, FLAGS.batch_size)
         test_loss, test_accuracy = test(model, device, test_loader)
@@ -184,8 +185,7 @@ def run_main(FLAGS):
             best_accuracy = test_accuracy
     
     
-    print("accuracy is {:2.2f}".format(best_accuracy))
-    
+    print("accuracy is {:2.2f}".format(best_accuracy)) 
     print("Training and evaluation finished")
     
     
