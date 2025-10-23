@@ -11,6 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 from ConvNet import ConvNet 
 import argparse
 import numpy as np 
+import matplotlib.pyplot as plt
 
 def is_correct(pred, ground_truth):
     total = 0
@@ -174,19 +175,54 @@ def run_main(FLAGS):
     
     best_accuracy = 0.0
     
+    domain = np.arange(1,FLAGS.num_epochs+1)
+    train_loss_y = np.array([])
+    test_loss_y = np.array([])
+    train_accuracy_y = np.array([])
+    test_accuracy_y = np.array([])
+
     # Run training for n_epochs specified in config 
     for epoch in range(1, FLAGS.num_epochs + 1):
         print("Epoch-Iter:", epoch, FLAGS.num_epochs)
         train_loss, train_accuracy = train(model, device, train_loader,
                                             optimizer, criterion, epoch, FLAGS.batch_size)
         test_loss, test_accuracy = test(model, device, test_loader)
+
+        train_loss_y = np.append(train_loss_y, train_loss)
+        test_loss_y = np.append(test_loss_y, test_loss)
+
+        train_accuracy_y = np.append(train_accuracy_y, train_accuracy * 100)
+        test_accuracy_y = np.append(test_accuracy_y, test_accuracy)
         
         if test_accuracy > best_accuracy:
             best_accuracy = test_accuracy
     
-    
+     
     print("accuracy is {:2.2f}".format(best_accuracy)) 
     print("Training and evaluation finished")
+
+    # plotting loss vs epoch
+    plt.plot(domain, train_loss_y, color='blue', label="train_loss")
+    plt.plot(domain, test_loss_y, color='red',label='test_loss')
+    plt.title(f"Loss vs Epoch (Mode: {FLAGS.mode})")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.ylim(bottom=0)
+    plt.savefig(f"Loss_vs_Epoch_Mode_{FLAGS.mode}")
+    plt.close()
+
+    # plotting accuracy vs epoch
+    plt.plot(domain, train_accuracy_y, color='blue',label='train_accuracy')
+    plt.plot(domain, test_accuracy_y, color='red',label='test_accuracy')
+    plt.title(f"Accuracy vs Epoch (Mode: {FLAGS.mode})")
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy")
+    plt.legend()
+    plt.ylim(bottom=0)
+    plt.savefig(f"Accuracy_vs_Epoch_Mode_{FLAGS.mode}")
+    plt.close()
+
     
     
 if __name__ == '__main__':
