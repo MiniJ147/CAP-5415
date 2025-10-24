@@ -24,7 +24,7 @@ class ConvNet(nn.Module):
         elif mode == 2:
             self.conv1 = nn.Conv2d(1, 40, kernel_size=5, stride=1)
             self.conv2 = nn.Conv2d(40, 40, kernel_size=5, stride=1)
-            self.pool = nn.MaxPool2d(2, 2)
+            self.pool = nn.AvgPool2d(2, stride=2)
             self.activation = nn.Sigmoid()
             self.fc1 = nn.Linear(40*4*4, 100)  # after conv/pool
             self.fc2 = nn.Linear(100, 10)
@@ -34,7 +34,7 @@ class ConvNet(nn.Module):
             # same as step 2 but we just change ReLU and lr=0.03
             self.conv1 = nn.Conv2d(1, 40, kernel_size=5, stride=1)
             self.conv2 = nn.Conv2d(40, 40, kernel_size=5, stride=1)
-            self.pool = nn.MaxPool2d(2, 2)
+            self.pool = nn.MaxPool2d(2, stride=(2,2))
             self.activation = nn.ReLU()
             self.fc1 = nn.Linear(40*4*4, 100)
             self.fc2 = nn.Linear(100, 10)
@@ -44,7 +44,7 @@ class ConvNet(nn.Module):
             # add another FC layer of 100 neurons
             self.conv1 = nn.Conv2d(1, 40, kernel_size=5, stride=1)
             self.conv2 = nn.Conv2d(40, 40, kernel_size=5, stride=1)
-            self.pool = nn.MaxPool2d(2, 2)
+            self.pool = nn.MaxPool2d(2, stride=2)
             self.activation = nn.ReLU()
             self.fc1 = nn.Linear(40*4*4, 100)
             self.fc2 = nn.Linear(100, 100)    # new FC
@@ -55,7 +55,7 @@ class ConvNet(nn.Module):
             # FC layers --> 1000 neurons, and Dropout 0.5
             self.conv1 = nn.Conv2d(1, 40, kernel_size=5, stride=1)
             self.conv2 = nn.Conv2d(40, 40, kernel_size=5, stride=1)
-            self.pool = nn.MaxPool2d(2, 2)
+            self.pool = nn.MaxPool2d(2, stride=2)
             self.activation = nn.ReLU()
             self.fc1 = nn.Linear(40*4*4, 1000)
             self.fc2 = nn.Linear(1000, 1000)

@@ -152,7 +152,8 @@ def run_main(FLAGS):
     # ======================================================================
     # Define optimizer function.
     # ----------------- YOUR CODE HERE ----------------------
-    optimizer = optim.Adam(model.parameters(), FLAGS.learning_rate)
+    # optimizer = optim.Adam(model.parameters(), FLAGS.learning_rate)
+    optimizer = optim.SGD(model.parameters(), lr=FLAGS.learning_rate)
         
     
     # Create transformations to apply to each data sample 
