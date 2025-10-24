@@ -34,7 +34,7 @@ class ConvNet(nn.Module):
             # same as step 2 but we just change ReLU and lr=0.03
             self.conv1 = nn.Conv2d(1, 40, kernel_size=5, stride=1)
             self.conv2 = nn.Conv2d(40, 40, kernel_size=5, stride=1)
-            self.pool = nn.MaxPool2d(2, stride=(2,2))
+            self.pool = nn.MaxPool2d(2, stride=2)
             self.activation = nn.ReLU()
             self.fc1 = nn.Linear(40*4*4, 100)
             self.fc2 = nn.Linear(100, 10)
