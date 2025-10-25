@@ -209,7 +209,6 @@ def run_main(FLAGS):
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.legend()
-    plt.ylim(bottom=0)
     plt.savefig(f"Loss_vs_Epoch_Mode_{FLAGS.mode}")
     plt.close()
 
@@ -220,7 +219,6 @@ def run_main(FLAGS):
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
     plt.legend()
-    plt.ylim(bottom=0)
     plt.savefig(f"Accuracy_vs_Epoch_Mode_{FLAGS.mode}")
     plt.close()
 
