@@ -3,3 +3,4 @@ torchvision
 tensorboard
 pandas
 matplotlib
+numpy
