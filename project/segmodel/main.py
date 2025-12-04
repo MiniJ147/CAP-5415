@@ -71,8 +71,10 @@ for epoch in range(EPOCHS):
     running_loss = 0
     running_iou = 0
 
+    # loading bar
     pbar = tqdm(train_loader, desc=f"Train Epoch {epoch+1}/{EPOCHS}")
 
+    # train logic
     for images, masks in pbar:
         images = images.to(DEVICE)
         masks  = masks.to(DEVICE)
@@ -111,7 +113,7 @@ for epoch in range(EPOCHS):
           f"Loss={running_loss/len(train_loader):.4f}, "
           f"IoU={running_iou/len(train_loader):.3f}")
     
-    # test
+    # |====== test logic =====|
     model.eval()
     test_iou = 0
 

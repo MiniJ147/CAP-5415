@@ -134,6 +134,9 @@ class TrafficCamDataset(Dataset):
         return image.float(), torch.from_numpy(mask).long()
 
     def json_to_mask(self, path, height, width):
+        """
+        translates json into a mask image for validation
+        """
         mask = np.full((height, width), Label.IGNORE.value, dtype=np.uint8)
 
         with open(path) as f:
